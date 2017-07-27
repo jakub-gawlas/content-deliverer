@@ -16,6 +16,18 @@ app.use(
   '/graphiql',
   graphiqlExpress({
     endpointURL: '/graphql',
+    query:
+`query GiveMeDocu {
+  documentation {
+    name
+    description
+    documents {
+      title
+      tags
+      content
+    }
+  }
+}`
   })
 );
 
