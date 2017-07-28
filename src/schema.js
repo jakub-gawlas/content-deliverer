@@ -1,7 +1,9 @@
 const { makeExecutableSchema } = require('graphql-tools');
 const model = require('./model');
+const { pubsub, CHANGED_CONTENT_TOPIC } = require('./pubsub');
+const config = require('./config');
 
-const typeDefs = `
+let typeDefs = `
   type Documentation {
     name: String
     description: String
@@ -19,14 +21,30 @@ const typeDefs = `
   }
 `;
 
+if (config.hotReloadMode)
+  typeDefs += `
+  type Subscription {
+    changedDocumentation: Documentation
+  }
+`;
+
 const resolvers = {
-  Query: {
-    documentation: model.getDocumentationInfo,
-  },
   Documentation: {
     documents: () => model.getDocuments(),
   },
+  Query: {
+    documentation: model.getDocumentationInfo,
+  },
 };
+
+if(config.hotReloadMode){
+  resolvers.Subscription = {
+    changedDocumentation: {
+      resolve: model.getDocumentationInfo,
+      subscribe: () => pubsub.asyncIterator(CHANGED_CONTENT_TOPIC),
+    },
+  }
+}
 
 const schema = makeExecutableSchema({ typeDefs, resolvers });
 
