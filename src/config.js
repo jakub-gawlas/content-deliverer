@@ -8,4 +8,5 @@ module.exports = {
   resourcesDirPath: path.resolve(
     process.env.APP_RESOURCES_DIR_PATH || './out/resources'
   ),
+  hotReloadMode: Boolean(process.env.APP_HOT_RELOAD) || false,
 };
