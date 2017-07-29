@@ -1,5 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const cors = require('cors');
 const { graphqlExpress, graphiqlExpress } = require('apollo-server-express');
 const { createServer } = require('http');
 const { SubscriptionServer } = require('subscriptions-transport-ws');
@@ -13,6 +14,8 @@ const config = require('./config');
   const schema = require('./schema');
 
   const app = express();
+
+  app.use(cors({}));
 
   app.use('/graphql', bodyParser.json(), graphqlExpress({ schema }));
 
