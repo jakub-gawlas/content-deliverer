@@ -5,9 +5,14 @@ let data = require(config.dataFilePath);
 
 if (config.hotReloadMode) {
   chokidar.watch(config.dataFilePath).on('change', path => {
-    pubsub.publish(CHANGED_CONTENT_TOPIC, { changed: true });
     delete require.cache[require.resolve(config.dataFilePath)];
-    data = require(config.dataFilePath);
+    try {
+      const newData = require(config.dataFilePath);
+      data = newData;
+      pubsub.publish(CHANGED_CONTENT_TOPIC, { changed: true });
+    } catch(err){
+      console.error(err);
+    }
   });
 }
 
