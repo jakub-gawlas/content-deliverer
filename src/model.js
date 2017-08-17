@@ -11,7 +11,7 @@ if (config.hotReloadMode) {
       data = newData;
       pubsub.publish(CHANGED_CONTENT_TOPIC, { changed: true });
     } catch(err){
-      console.error(err);
+      console.error('while load data', err);
     }
   });
 }
